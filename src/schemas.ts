@@ -9,6 +9,12 @@ import {
   string,
 } from "valibot";
 
+export const errorSchema = partial(
+  looseObject({
+    reason: string(),
+  }),
+);
+
 export const portalMetadataSchema = partial(
   looseObject({
     portalVersion: string(),

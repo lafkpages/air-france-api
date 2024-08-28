@@ -1,9 +1,10 @@
 import { io } from "socket.io-client";
-import { parse } from "valibot";
+import { parse, union } from "valibot";
 
 import {
   connectivityStatusSchema,
   deviceStatusSchema,
+  errorSchema,
   flightDataSchema,
   flightStatusSchema,
   flightTrajectorySchema,
@@ -72,7 +73,7 @@ export async function getFlightTrajectory() {
 
 export async function getInformationalMessages() {
   return parse(
-    informationalMessagesSchema,
+    union([informationalMessagesSchema, errorSchema]),
     await (
       await fetch(new URL("ach/api/payload/informational-messages", baseUrl))
     ).json(),
