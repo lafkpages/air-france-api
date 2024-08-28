@@ -70,11 +70,11 @@ describe.if(isReallyInFlight)("in-flight APIs", () => {
     socket.on("flight-data", flightDataHandler);
     socket.on("health-status-report", healthStatusReportHandler);
 
-    await Bun.sleep(1000);
+    await Bun.sleep(5000);
 
     socket.disconnect();
 
     expect(flightDataHandler).toHaveBeenCalled();
     expect(healthStatusReportHandler).toHaveBeenCalled();
-  });
+  }, 6000);
 });
