@@ -12,7 +12,24 @@ import {
   portalMetadataSchema,
 } from "./schemas";
 
-const baseUrl = "https://connect.airfrance.com";
+export const baseUrl = new URL("https://connect.airfrance.com");
+
+/**
+ * A simpler yet maybe more inaccurate method to check if currently
+ * on-board an Air France flight. For a more accurate method that
+ * only works on Node, and not in the browser, see the `isInFlight`
+ * function in `src/node.ts`.
+ */
+export async function isInFlight() {
+  const resp = await fetch(new URL("config.json", baseUrl), {
+    method: "HEAD",
+    redirect: "manual",
+  });
+  return (
+    resp.status === 200 &&
+    !!resp.headers.get("content-type")?.startsWith("application/json")
+  );
+}
 
 export async function getPortalMetadata() {
   return parse(
@@ -79,5 +96,5 @@ export async function getFlightData() {
 export function getFlightDataSocket(
   ...args: typeof io extends (first: any, ...rest: infer U) => any ? U : never
 ) {
-  return io(baseUrl, ...args);
+  return io(baseUrl.href, ...args);
 }
