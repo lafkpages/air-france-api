@@ -2,6 +2,7 @@ import {
   array,
   boolean,
   looseObject,
+  nullable,
   number,
   object,
   objectWithRest,
@@ -226,13 +227,13 @@ export const flightTrajectorySchema = partial(
 );
 
 const informationalMessageSchema = union([
+  errorSchema,
   partial(
     looseObject({
       key: string(),
       value: string(),
     }),
   ),
-  errorSchema,
 ]);
 
 export const informationalMessagesSchema = partial(
@@ -292,7 +293,7 @@ export const flightDataSchema = partial(
         currentTimeUTC: number(),
         duration: number(),
         flightProgressTime: number(),
-        timeToDestination: number(),
+        timeToDestination: nullable(number()),
       }),
     ),
     connectivity: partial(
