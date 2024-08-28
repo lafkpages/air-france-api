@@ -95,7 +95,17 @@ export async function getFlightData() {
 }
 
 export function getFlightDataSocket(
-  ...args: typeof io extends (first: any, ...rest: infer U) => any ? U : never
+  options?: typeof io extends (first: any, options: infer U) => any ? U : never,
 ) {
-  return io(baseUrl.href, ...args);
+  options = {
+    // defaults gotten from:
+    // https://connect.airfrance.com/ach/js/aircon-hub-library.js
+    reconnectionDelay: 10000,
+    reconnectionDelayMax: 20000,
+    randomizationFactor: 0,
+
+    ...options,
+  };
+
+  return io(new URL("connectivity", baseUrl).href, options);
 }

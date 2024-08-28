@@ -4,6 +4,7 @@ import {
   getConnectivityStatus,
   getDeviceStatus,
   getFlightData,
+  getFlightDataSocket,
   getFlightStatus,
   getFlightTrajectory,
   getHealthReport,
@@ -52,4 +53,18 @@ describe.if(isReallyInFlight)("in-flight APIs", () => {
   test("getFlightData", () => {
     expect(getFlightData()).resolves.toBeObject();
   });
+
+  test("socket", async () => {
+    const socket = getFlightDataSocket();
+
+    socket.on("flight-data", (...args) => {
+      console.log("Got flight data", args);
+    });
+
+    socket.on("health-status-report", (...args) => {
+      console.log("Got health status report", args);
+    });
+
+    await Bun.sleep(10000);
+  }, 11000);
 });
