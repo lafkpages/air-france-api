@@ -24,36 +24,36 @@ test("isInFlight", () => {
 });
 
 describe.if(isReallyInFlight)("in-flight APIs", () => {
-  test("getPortalMetadata", () => {
-    expect(getPortalMetadata()).resolves.toBeObject();
+  test("getPortalMetadata", async () => {
+    expect(await getPortalMetadata()).toBeObject();
   });
 
-  test("getFlightStatus", () => {
-    expect(getFlightStatus()).resolves.toBeObject();
+  test("getFlightStatus", async () => {
+    expect(await getFlightStatus()).toBeObject();
   });
 
-  test("getConnectivityStatus", () => {
-    expect(getConnectivityStatus()).resolves.toBeObject();
+  test("getConnectivityStatus", async () => {
+    expect(await getConnectivityStatus()).toBeObject();
   });
 
-  test("getHealthReport", () => {
-    expect(getHealthReport()).resolves.toBeArray();
+  test("getHealthReport", async () => {
+    expect(await getHealthReport()).toBeArray();
   });
 
-  test("getFlightTrajectory", () => {
-    expect(getFlightTrajectory()).resolves.toBeObject();
+  test("getFlightTrajectory", async () => {
+    expect(await getFlightTrajectory()).toBeObject();
   });
 
-  test("getInformationalMessages", () => {
-    expect(getInformationalMessages()).resolves.toBeObject();
+  test("getInformationalMessages", async () => {
+    expect(await getInformationalMessages()).toBeObject();
   });
 
-  test("getDeviceStatus", () => {
-    expect(getDeviceStatus()).resolves.toBeObject();
+  test("getDeviceStatus", async () => {
+    expect(await getDeviceStatus()).toBeObject();
   });
 
-  test("getFlightData", () => {
-    expect(getFlightData()).resolves.toBeObject();
+  test("getFlightData", async () => {
+    expect(await getFlightData()).toBeObject();
   });
 
   test("socket", async () => {
