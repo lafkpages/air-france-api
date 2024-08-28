@@ -58,7 +58,7 @@ export async function getConnectivityStatus() {
 export async function getHealthReport() {
   return parse(
     healthReportSchema,
-    await (await fetch(new URL("ach/api/report"))).json(),
+    await (await fetch(new URL("ach/api/status/report", baseUrl))).json(),
   );
 }
 
