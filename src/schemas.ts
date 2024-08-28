@@ -7,6 +7,7 @@ import {
   objectWithRest,
   partial,
   string,
+  union,
 } from "valibot";
 
 export const errorSchema = partial(
@@ -224,12 +225,15 @@ export const flightTrajectorySchema = partial(
   }),
 );
 
-const informationalMessageSchema = partial(
-  looseObject({
-    key: string(),
-    value: string(),
-  }),
-);
+const informationalMessageSchema = union([
+  partial(
+    looseObject({
+      key: string(),
+      value: string(),
+    }),
+  ),
+  errorSchema,
+]);
 
 export const informationalMessagesSchema = partial(
   objectWithRest(

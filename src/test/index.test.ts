@@ -1,4 +1,6 @@
-import { describe, expect, test } from "bun:test";
+import type { FlightData, HealthReport } from "..";
+
+import { describe, expect, mock, test } from "bun:test";
 
 import {
   getConnectivityStatus,
@@ -57,14 +59,22 @@ describe.if(isReallyInFlight)("in-flight APIs", () => {
   test("socket", async () => {
     const socket = getFlightDataSocket();
 
-    socket.on("flight-data", (...args) => {
-      console.log("Got flight data", args);
+    const flightDataHandler = mock((data: FlightData) => {
+      console.log("Got flight data", data);
     });
 
-    socket.on("health-status-report", (...args) => {
-      console.log("Got health status report", args);
+    const healthStatusReportHandler = mock((data: HealthReport) => {
+      console.log("Got health status report", data);
     });
 
-    await Bun.sleep(10000);
-  }, 11000);
+    socket.on("flight-data", flightDataHandler);
+    socket.on("health-status-report", healthStatusReportHandler);
+
+    await Bun.sleep(1000);
+
+    socket.disconnect();
+
+    expect(flightDataHandler).toHaveBeenCalled();
+    expect(healthStatusReportHandler).toHaveBeenCalled();
+  });
 });

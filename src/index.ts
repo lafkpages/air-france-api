@@ -1,10 +1,11 @@
-import { io } from "socket.io-client";
-import { parse, union } from "valibot";
+import type { InferOutput } from "valibot";
+
+import { io, Socket } from "socket.io-client";
+import { parse } from "valibot";
 
 import {
   connectivityStatusSchema,
   deviceStatusSchema,
-  errorSchema,
   flightDataSchema,
   flightStatusSchema,
   flightTrajectorySchema,
@@ -32,14 +33,16 @@ export async function isInFlight() {
   );
 }
 
-export async function getPortalMetadata() {
+export type PortalMetadata = InferOutput<typeof portalMetadataSchema>;
+export async function getPortalMetadata(): Promise<PortalMetadata> {
   return parse(
     portalMetadataSchema,
     await (await fetch(new URL("config.json", baseUrl))).json(),
   );
 }
 
-export async function getFlightStatus() {
+export type FlightStatus = InferOutput<typeof flightStatusSchema>;
+export async function getFlightStatus(): Promise<FlightStatus> {
   return parse(
     flightStatusSchema,
     await (
@@ -48,21 +51,24 @@ export async function getFlightStatus() {
   );
 }
 
-export async function getConnectivityStatus() {
+export type ConnectivityStatus = InferOutput<typeof connectivityStatusSchema>;
+export async function getConnectivityStatus(): Promise<ConnectivityStatus> {
   return parse(
     connectivityStatusSchema,
     await (await fetch(new URL("ach/api/status", baseUrl))).json(),
   );
 }
 
-export async function getHealthReport() {
+export type HealthReport = InferOutput<typeof healthReportSchema>;
+export async function getHealthReport(): Promise<HealthReport> {
   return parse(
     healthReportSchema,
     await (await fetch(new URL("ach/api/status/report", baseUrl))).json(),
   );
 }
 
-export async function getFlightTrajectory() {
+export type FlightTrajectory = InferOutput<typeof flightTrajectorySchema>;
+export async function getFlightTrajectory(): Promise<FlightTrajectory> {
   return parse(
     flightTrajectorySchema,
     await (
@@ -71,23 +77,28 @@ export async function getFlightTrajectory() {
   );
 }
 
-export async function getInformationalMessages() {
+export type InformationalMessages = InferOutput<
+  typeof informationalMessagesSchema
+>;
+export async function getInformationalMessages(): Promise<InformationalMessages> {
   return parse(
-    union([informationalMessagesSchema, errorSchema]),
+    informationalMessagesSchema,
     await (
       await fetch(new URL("ach/api/payload/informational-messages", baseUrl))
     ).json(),
   );
 }
 
-export async function getDeviceStatus() {
+export type DeviceStatus = InferOutput<typeof deviceStatusSchema>;
+export async function getDeviceStatus(): Promise<DeviceStatus> {
   return parse(
     deviceStatusSchema,
     await (await fetch(new URL("ach/api/connectivity/device", baseUrl))).json(),
   );
 }
 
-export async function getFlightData() {
+export type FlightData = InferOutput<typeof flightDataSchema>;
+export async function getFlightData(): Promise<FlightData> {
   return parse(
     flightDataSchema,
     await (await fetch(new URL("ach/api/flightdata", baseUrl))).json(),
@@ -96,7 +107,13 @@ export async function getFlightData() {
 
 export function getFlightDataSocket(
   options?: typeof io extends (first: any, options: infer U) => any ? U : never,
-) {
+): Socket<
+  {
+    "flight-data": (flightData: FlightData) => void;
+    "health-status-report": (healthReport: HealthReport) => void;
+  },
+  {}
+> {
   options = {
     // defaults gotten from:
     // https://connect.airfrance.com/ach/js/aircon-hub-library.js
