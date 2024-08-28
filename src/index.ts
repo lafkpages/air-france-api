@@ -1,3 +1,4 @@
+import { io } from "socket.io-client";
 import { parse } from "valibot";
 
 import {
@@ -73,4 +74,10 @@ export async function getFlightData() {
     flightDataSchema,
     await (await fetch(new URL("ach/api/flightdata", baseUrl))).json(),
   );
+}
+
+export function getFlightDataSocket(
+  ...args: typeof io extends (first: any, ...rest: infer U) => any ? U : never
+) {
+  return io(baseUrl, ...args);
 }
